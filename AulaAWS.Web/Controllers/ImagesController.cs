@@ -26,7 +26,7 @@ namespace AulaAWS.Web.Controllers
                 image.CopyToAsync(imageStream);
 
                 var request = new PutObjectRequest();
-                request.Key = "reconhecimento" + image.FileName;
+                request.Key = "reconhecimento-" + image.FileName;
                 request.BucketName = "aula-imagens";
                 request.InputStream = imageStream;
 

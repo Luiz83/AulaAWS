@@ -1,5 +1,6 @@
 using Amazon.Runtime;
 using Amazon.S3;
+using Amazon.Rekognition;
 using AulaAWS.Lib.Data;
 using AulaAWS.Lib.Data.Repositorios;
 using AulaAWS.Lib.Data.Repositorios.Interfaces;
@@ -24,6 +25,7 @@ awsOptions.Credentials = new EnvironmentVariablesAWSCredentials();
 builder.Services.AddDefaultAWSOptions(awsOptions);
 
 builder.Services.AddAWSService<IAmazonS3>();
+builder.Services.AddScoped<AmazonRekognitionClient>();
 
 var app = builder.Build();
 
