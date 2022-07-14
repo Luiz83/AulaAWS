@@ -28,8 +28,8 @@ namespace AulaAWS.Web.Controllers
 
                 s3ObjectSource.Bucket = "aula-imagens";
                 s3ObjectSource.Name = nameImageInS3;
-
                 sourceImage.S3Object = s3ObjectSource;
+
                 request.TargetImage = targetImage;
                 request.SourceImage = sourceImage;
 
@@ -59,7 +59,7 @@ namespace AulaAWS.Web.Controllers
 
             var rostoAtual = response.FaceDetails.First();
 
-            if ((response.FaceDetails.Count == 1) || (rostoAtual.Eyeglasses.Value == false))
+            if ((response.FaceDetails.Count == 1) && (rostoAtual.Eyeglasses.Value == false))
                 return Ok(response);
             else
                 return BadRequest("Essa imagem não contém um rosto ou possui um rosto com óculos ou possui mais de um rosto!");
