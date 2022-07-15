@@ -19,6 +19,10 @@ namespace AulaAWS.Lib.Data.Repositorios
         {
             return await _dbset.AsNoTracking().ToListAsync();
         }
+        public async Task<T> BuscarPorIdAsync(int id)
+        {
+            return await _dbset.AsNoTracking().FirstAsync(x => x.Id == id);
+        }
         public async Task AdicionarAsync(T item)
         {
             await _dbset.AddAsync(item);
