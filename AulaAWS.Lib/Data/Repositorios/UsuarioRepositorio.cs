@@ -17,5 +17,11 @@ namespace AulaAWS.Lib.Data.Repositorios
             usuario.SetSenha(senha);
             await _context.SaveChangesAsync();
         }
+        public async Task AtualizarImagemAsync(int id, string nomeArquivo)
+        {
+            var usuario = await _dbset.FindAsync(id);
+            usuario.SetUrlImagem(nomeArquivo);
+            await _context.SaveChangesAsync();
+        }
     }
 }
