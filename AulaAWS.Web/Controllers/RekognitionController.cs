@@ -59,7 +59,7 @@ namespace AulaAWS.Web.Controllers
 
             var rostoAtual = response.FaceDetails.First();
 
-            if ((response.FaceDetails.Count == 1) || (rostoAtual.Eyeglasses.Value == false))
+            if ((response.FaceDetails.Count == 1) && (rostoAtual.Eyeglasses.Value == false))
                 return Ok(response);
             else
                 return BadRequest("Essa imagem não contém um rosto ou possui um rosto com óculos ou possui mais de um rosto!");
