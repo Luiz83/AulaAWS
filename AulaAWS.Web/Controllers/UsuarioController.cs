@@ -31,6 +31,16 @@ namespace AulaAWS.Web.Controllers
         {
             return Ok(await _repositorio.ListarTodosAsync());
         }
+        [HttpGet("Login")]
+        public async Task<IActionResult> Login(string email, string senhaLogin)
+        {
+            var usuario = await BuscarUsuarioPorEmail(email);
+            var senhaEstaCorreta = await VerificarSenha(senhaLogin, usuario.Senha);
+            if (senhaEstaCorreta)
+                return Ok(usuario.Id);
+            else
+                return BadRequest("Senha inválida");
+        }
         [HttpPost]
         public async Task<IActionResult> Adicionar(UsuarioDTO usuarioDto)
         {
@@ -101,6 +111,22 @@ namespace AulaAWS.Web.Controllers
             else
                 await _amazonS3.DeleteObjectAsync("aula-imagens", nomeArquivo);
             return false;
+        }
+        private async Task<Usuario> BuscarUsuarioPorEmail(string email)
+        {
+            var listaUsuarios = await _repositorio.ListarTodosAsync();
+            var usuario = listaUsuarios.Find(x => x.Email == email);
+            if(usuario != null)
+                return usuario;
+            else    
+                throw new Exception("Nenhum usuario foi encontrado com esse email!");
+        }
+        private async Task<bool> VerificarSenha(string senhaLogin, string senhaUsuario)
+        {
+            if (senhaLogin == senhaUsuario)
+                return true;
+            else
+                return false;
         }
     }
 }
