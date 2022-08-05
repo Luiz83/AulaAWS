@@ -1,13 +1,11 @@
-using Amazon.Rekognition;
-using Amazon.Rekognition.Model;
-using Amazon.S3;
-using Amazon.S3.Model;
 using AulaAWS.Application.DTOs;
 using AulaAWS.Lib.Data.Repositorios.Interfaces;
 using AulaAWS.Lib.Models;
 using Microsoft.AspNetCore.Http;
 using AulaAWS.Services.Services;
 using Newtonsoft.Json;
+using Konscious.Security.Cryptography;
+using System.Text;
 
 namespace AulaAWS.Application.Services
 {
@@ -24,9 +22,11 @@ namespace AulaAWS.Application.Services
 
         public async Task<string> CadastrarUsuario(UsuarioDTO usuarioDto)
         {
-            var usuario = new Usuario(usuarioDto.Nome, usuarioDto.Cpf, usuarioDto.DataNascimento, usuarioDto.Email, usuarioDto.Senha);
+            var senha = await ConverterSenhaEmHash(usuarioDto.Senha);
+            var usuario = new Usuario(usuarioDto.Nome, usuarioDto.Cpf, usuarioDto.DataNascimento, usuarioDto.Email, senha);
             await _repositorio.AdicionarAsync(usuario);
-            var resposta = new JsonId(){
+            var resposta = new JsonId()
+            {
                 Id = usuario.Id.ToString()
             };
             return JsonConvert.SerializeObject(resposta);
@@ -61,11 +61,12 @@ namespace AulaAWS.Application.Services
         public async Task<string> LoginUsuario(string email, string senha)
         {
             var usuario = await _repositorio.BuscarUsuarioPorEmail(email);
-            var senhaEstaCorreta = VerificarSenha(senha, usuario.Senha);
+            var senhaEstaCorreta = await VerificarSenha(senha, usuario.Senha);
             if (!senhaEstaCorreta)
                 throw new Exception("Senha incorreta");
 
-            var resposta = new JsonId(){
+            var resposta = new JsonId()
+            {
                 Id = usuario.Id.ToString()
             };
             return JsonConvert.SerializeObject(resposta);
@@ -80,9 +81,23 @@ namespace AulaAWS.Application.Services
                 throw new Exception("Foto inválida");
             return true;
         }
-        private bool VerificarSenha(string senhaLogin, string senhaUsuario)
+        private async Task<bool> VerificarSenha(string senhaLogin, string senhaUsuario)
         {
-            return senhaLogin == senhaUsuario;
+            var senha = await ConverterSenhaEmHash(senhaLogin);
+            return senha == senhaUsuario;
+        }
+
+        public async Task<string> ConverterSenhaEmHash(string senha)
+        {
+            byte[] password = Encoding.UTF8.GetBytes(senha);
+            byte[] salt = Encoding.UTF8.GetBytes("UOrd7FcW33T5gyMv");
+            var argon2 = new Argon2i(password);
+            argon2.DegreeOfParallelism = 10;
+            argon2.MemorySize = 8192;
+            argon2.Iterations = 20;
+            argon2.Salt = salt;
+            var hash = await argon2.GetBytesAsync(64);
+            return Convert.ToBase64String(hash);
         }
     }
 }

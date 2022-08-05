@@ -35,7 +35,7 @@ namespace AulaAWS.Lib.Models
         {
             if ((cpf.Count() <= 11) & cpf.All(char.IsNumber))
                 return true;
-            throw new Exception();
+            throw new Exception("Cpf invalido, digite apenas números!");
         }
         public bool ValidarSeSenhaPossuiPeloMenosOitoDigitos(string senha)
         {
@@ -64,6 +64,7 @@ namespace AulaAWS.Lib.Models
         }
         public void SetSenha(string senha)
         {
+            ValidarSeSenhaPossuiPeloMenosOitoDigitos(senha);
             Senha = senha;
         }
         public void SetUrlImagem(string urlImagem)

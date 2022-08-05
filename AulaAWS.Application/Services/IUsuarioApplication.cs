@@ -7,12 +7,13 @@ namespace AulaAWS.Application.Services
 {
     public interface IUsuarioApplication
     {
-         Task<string> CadastrarUsuario(UsuarioDTO dto);
-         Task<List<Usuario>> ListarUsuarios();
-         Task AlterarSenhaUsuario(Guid id, string senha);
-         Task DeletarUsuario(Guid id);
-         Task CadastrarImagemUsuario(Guid id, IFormFile imagem);
-         Task<string> LoginUsuario(string email, string senha);
-         Task<bool> LoginUsuarioImagem(Guid id, IFormFile imagem);
+        Task<string> CadastrarUsuario(UsuarioDTO dto);
+        Task<List<Usuario>> ListarUsuarios();
+        Task AlterarSenhaUsuario(Guid id, string senha);
+        Task DeletarUsuario(Guid id);
+        Task CadastrarImagemUsuario(Guid id, IFormFile imagem);
+        Task<string> LoginUsuario(string email, string senha);
+        Task<bool> LoginUsuarioImagem(Guid id, IFormFile imagem);
+        Task<string> ConverterSenhaEmHash(string senha);
     }
 }
